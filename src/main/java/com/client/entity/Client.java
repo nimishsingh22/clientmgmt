@@ -24,15 +24,12 @@ public class Client {
     private int id;
     
 	@Column(name = "name")
-	@NotEmpty
     private String name;
 	
     @Column(name = "email")
-    @NotEmpty
     private String email;
     
     @Column(name = "password")
-    @NotEmpty
     private String password;
 
     

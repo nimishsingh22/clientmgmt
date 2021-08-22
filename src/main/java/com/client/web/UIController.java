@@ -5,7 +5,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,71 +22,34 @@ public class UIController {
 	@Autowired
 	ClientService  clientService ;
 	
+	@Autowired
+	SignupValidator  signupValidator ;
+
 	@GetMapping("/signup")
     public ModelAndView getSignup(){
         ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("clientForm", new Client());
         modelAndView.setViewName("signup");
         return modelAndView;
     }
 	@PostMapping("/signup")
-	 public ModelAndView createClient( Client client, BindingResult bindingResult) {
+	 public ModelAndView createClient(@ModelAttribute("clientForm")  Client client, BindingResult bindingResult) {
 	        ModelAndView modelAndView = new ModelAndView();
-	        if(client.getEmail()=="" || client.getName()=="" || client.getPassword()=="") {
-	        	/* bindingResult.rejectValue("error.empty",
-                         "Please fill all the entries");*/
-	        	 modelAndView.addObject("errormessage", "Please fill all the entries");
-	        	  modelAndView.setViewName("signup");
-	        }
-	        try{
-	       Client cl=clientService.findClientByEmail(client.getEmail());
-	       
-	        if (cl != null) {
-	            bindingResult.rejectValue("email", "error.email",
-	                            "There is already a user registered with this email id");
-	        }
+	        signupValidator.validate(client, bindingResult);
 	        if (bindingResult.hasErrors()) {
 	            modelAndView.setViewName("signup");
 	        } else {
 	        	Client c = clientService.saveClient(client);
 	            modelAndView.addObject("successMessage", "User has been registered successfully");
-	            modelAndView.addObject("user", new Client());
+	            modelAndView.addObject("clientForm", new Client());
 	            modelAndView.setViewName("signup");
 	        }
-	        }
-	        catch(Exception e) {
-	        	System.out.println(e.getStackTrace()+"  enter all data");
-	        	
-	        }
+	        
+	      
 	       
 	        return modelAndView;
 	    }
-/*	@PostMapping("/signup")
-	public String createClient(Client client,Map<String, Object> model) {
-		if(client.getEmail()=="" || client.getName()=="" || client.getPassword()=="") {
-			model.put("emptyerror", "Please fill all the entries ");
-			//System.out.println("Please fill all the entries ");
-			return "signup";   
-		}
-		try {
-			Client cl=clientService.findClientByEmail(client.getEmail());
-			if(cl != null) {
-				model.put("emptyerror", "Please choose another email id");
-			}
-			else {
-			Client c = clientService.saveClient(client);
-			System.out.println(c);
-			model.put("success", "You have been Registered.Please sign in ");
-			return "signup";
-		}
-		}
-		catch(Exception e) {
-			System.out.println(e.getStackTrace());
-		}
-		
-	return "signup";
-		
-	}
-	*/
+
 	
 	
 	@GetMapping("/signin")
