@@ -18,10 +18,7 @@ public class ClientApplication extends SpringBootServletInitializer {
 	public static void main(String[] args) {
 		SpringApplication.run(ClientApplication.class, args);
 	}
-	@Bean
-	public org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder bCryptPasswordEncoder(){
-		return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
-	}
+
 	
 	@Bean
 	 public MessageSource messageSource() {

@@ -44,9 +44,7 @@ public class UIController {
 	            modelAndView.addObject("clientForm", new Client());
 	            modelAndView.setViewName("signup");
 	        }
-	        
-	      
-	       
+	     
 	        return modelAndView;
 	    }
 

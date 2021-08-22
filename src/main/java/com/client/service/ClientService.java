@@ -18,12 +18,10 @@ import com.client.repo.RoleRepository;
 public class ClientService  {
 	private ClientRepository clientRepository;
 	private RoleRepository roleRepository;
-	 private BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Autowired
-	ClientService(ClientRepository clientRepository,RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder){
+	ClientService(ClientRepository clientRepository,RoleRepository roleRepository){
 		this.roleRepository=roleRepository;
 		this.clientRepository=clientRepository;
-		this.bCryptPasswordEncoder=bCryptPasswordEncoder;
 	}
 	
 	public Client findClientByEmail(String email) {
@@ -31,7 +29,7 @@ public class ClientService  {
 	}
 	
 	public Client saveClient(Client client) {
-		 client.setPassword(bCryptPasswordEncoder.encode(client.getPassword()));
+		 client.setPassword(client.getPassword());
 		client.setActive(true);
 		Role role= roleRepository.findByRole("ADMIN");
 		System.out.println("Role is  "+role.toString());
